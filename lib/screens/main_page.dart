@@ -22,13 +22,14 @@ class _MainPageState extends State<MainPage> {
           Container(
             alignment: Alignment.center,
             child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, "/dashboard");
-                },
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 30),
-                  child: Text("Try dashboard demo"),
-                )),
+              onPressed: () {
+                Navigator.pushNamed(context, "/dashboard");
+              },
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 30),
+                child: Text("Try dashboard demo"),
+              ),
+            ),
           )
         ],
       ),
