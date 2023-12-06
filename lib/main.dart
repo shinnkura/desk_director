@@ -192,7 +192,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                 padding: const EdgeInsets.all(8),
                 horizontalSpace: 8,
                 verticalSpace: 8,
-                slotAspectRatio: 1,
+                slotAspectRatio: 2,
                 animateEverytime: true,
                 dashboardItemController: itemController,
                 slotCount: slot!,
