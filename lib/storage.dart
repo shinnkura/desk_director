@@ -55,33 +55,15 @@ class ColoredDashboardItem extends DashboardItem {
 class MyItemStorage extends DashboardItemStorageDelegate<ColoredDashboardItem> {
   late SharedPreferences _preferences;
 
-  final List<int> _slotCounts = [4, 6, 8];
+  final List<int> _slotCounts = [8];
 
   final Map<int, List<ColoredDashboardItem>> _default = {
-    4: <ColoredDashboardItem>[
-      ColoredDashboardItem(
-          startX: 3,
-          startY: 6,
-          height: 1,
-          width: 1,
-          identifier: "13",
-          data: "pub"),
-    ],
-    6: <ColoredDashboardItem>[
-      ColoredDashboardItem(
-          startX: 4,
-          startY: 3,
-          height: 1,
-          width: 1,
-          identifier: "13",
-          data: "pub"),
-    ],
     8: <ColoredDashboardItem>[
       ColoredDashboardItem(
           startX: 6,
           startY: 3,
-          height: 2,
-          width: 2,
+          height: 1,
+          width: 1,
           identifier: "13",
           data: "pub"),
     ]
