@@ -60,14 +60,6 @@ class MyItemStorage extends DashboardItemStorageDelegate<ColoredDashboardItem> {
   final Map<int, List<ColoredDashboardItem>> _default = {
     4: <ColoredDashboardItem>[
       ColoredDashboardItem(
-          startX: 0,
-          startY: 3,
-          minHeight: 2,
-          height: 2,
-          width: 1,
-          identifier: "5",
-          data: "add"),
-      ColoredDashboardItem(
           startX: 3,
           startY: 6,
           height: 1,
@@ -77,14 +69,6 @@ class MyItemStorage extends DashboardItemStorageDelegate<ColoredDashboardItem> {
     ],
     6: <ColoredDashboardItem>[
       ColoredDashboardItem(
-          startX: 5,
-          startY: 2,
-          minHeight: 2,
-          height: 2,
-          width: 1,
-          identifier: "5",
-          data: "add"),
-      ColoredDashboardItem(
           startX: 4,
           startY: 3,
           height: 1,
@@ -93,14 +77,6 @@ class MyItemStorage extends DashboardItemStorageDelegate<ColoredDashboardItem> {
           data: "pub"),
     ],
     8: <ColoredDashboardItem>[
-      ColoredDashboardItem(
-          startX: 7,
-          startY: 0,
-          minHeight: 2,
-          height: 2,
-          width: 1,
-          identifier: "5",
-          data: "add"),
       ColoredDashboardItem(
           startX: 6,
           startY: 3,

@@ -1,6 +1,5 @@
 import 'storage.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 const Color blue = Color(0xFF4285F4);
 const Color red = Color(0xFFEA4335);
@@ -13,7 +12,6 @@ class DataWidget extends StatelessWidget {
   final ColoredDashboardItem item;
 
   final Map<String, Widget Function(ColoredDashboardItem i)> _map = {
-    "add": (l) => const AddAdvice(),
     "pub": (l) => const Pub(),
   };
 
@@ -35,9 +33,6 @@ class Pub extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        launchUrlString("https://pub.dev/packages/dashboard");
-      },
       child: Container(
         color: Colors.white,
         child: Container(
@@ -49,35 +44,6 @@ class Pub extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class AddAdvice extends StatelessWidget {
-  const AddAdvice({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: blue,
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      child: const Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.add,
-            size: 30,
-            color: Colors.white,
-          ),
-          Text(
-            "Add own colored widget with custom sizes.",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white),
-          )
-        ],
       ),
     );
   }

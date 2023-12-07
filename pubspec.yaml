@@ -42,6 +42,7 @@ dependencies:
   url_launcher: ^6.2.1
   firebase_core:
   flutter_staggered_grid_view:
+  webview_flutter: ^4.4.2
 
 dev_dependencies:
   flutter_test:
