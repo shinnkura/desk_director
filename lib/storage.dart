@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ColoredDashboardItem extends DashboardItem {
+  Color? color;
+  String? data;
+  String? text;
+
   ColoredDashboardItem(
       {this.color,
       required int width,
@@ -34,13 +38,8 @@ class ColoredDashboardItem extends DashboardItem {
   ColoredDashboardItem.fromMap(Map<String, dynamic> map)
       : color = map["color"] != null ? Color(map["color"]) : null,
         data = map["data"],
+        text = map["text"], // テキストを復元
         super.withLayout(map["item_id"], ItemLayout.fromMap(map["layout"]));
-
-  Color? color;
-
-  String? data;
-
-  String? text;
 
   @override
   Map<String, dynamic> toMap() {
