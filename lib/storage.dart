@@ -12,6 +12,7 @@ class ColoredDashboardItem extends DashboardItem {
       required int height,
       required String identifier,
       this.data,
+      this.text,
       int minWidth = 1,
       int minHeight = 1,
       int? maxHeight,
@@ -39,14 +40,19 @@ class ColoredDashboardItem extends DashboardItem {
 
   String? data;
 
+  String? text;
+
   @override
   Map<String, dynamic> toMap() {
     var sup = super.toMap();
     if (color != null) {
-      sup["color"] = color?.value;
+      sup["color"] = color!.value; // Color オブジェクトの整数値を保存
     }
     if (data != null) {
       sup["data"] = data;
+    }
+    if (text != null) {
+      sup["text"] = text; // テキストを追加
     }
     return sup;
   }

@@ -17,13 +17,16 @@ class DataWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // item.dataがnullでないことを確認し、nullの場合は代替のウィジェットを表示
-    if (item.data != null && _map.containsKey(item.data)) {
-      return _map[item.data]!(item);
-    } else {
-      // item.dataがnullの場合やマップに存在しない場合の処理
-      return const Center(child: Text('Data not available'));
-    }
+    // item.color を使用して背景色を設定
+    return Container(
+      color: item.color ?? Colors.transparent, // 背景色を設定
+      child: (item.data != null && _map.containsKey(item.data))
+          ? _map[item.data]!(item)
+          : Center(
+              child: Text(
+                  item.text?.isEmpty ?? true ? 'No text provided' : item.text!),
+            ),
+    );
   }
 }
 

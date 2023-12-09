@@ -212,6 +212,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           minHeight: res[3],
           maxWidth: res[4] == 0 ? null : res[4],
           maxHeight: res[5] == 0 ? null : res[5],
+          text: res[7],
         ),
         mountToTop: false,
       );
