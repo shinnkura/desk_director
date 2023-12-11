@@ -21,34 +21,32 @@ class _SeatChartPageState extends State<SeatChartPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('座席表'),
-        backgroundColor: Colors.orange, // アプリのカラースキームに合わせる
+        backgroundColor: Colors.orange,
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 10.0), // ここで上部に余白を追加
+        padding: const EdgeInsets.only(top: 10.0),
         child: StreamBuilder(
           stream: firestore.collection('seats').snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
-              // エラーハンドリング
+              return const Center(child: Text('エラーが発生しました。'));
             }
             if (!snapshot.hasData) {
-              // データがない場合の処理
+              return const Center(child: CircularProgressIndicator());
             }
 
             var seats = snapshot.data!.docs;
-            // グリッドの全セル数を設定
             int totalCells = rows * rows;
 
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: rows,
-                crossAxisSpacing: isSmallScreen ? 0 : 4, // スマホでは隙間を0に
-                mainAxisSpacing: isSmallScreen ? 0 : 4, // スマホでは隙間を0に
-                childAspectRatio: isSmallScreen ? 1 / 2 : 1, // スマホでは縦長の比率に
+                crossAxisSpacing: isSmallScreen ? 0 : 4,
+                mainAxisSpacing: isSmallScreen ? 0 : 4,
+                childAspectRatio: isSmallScreen ? 1 / 2 : 1,
               ),
               itemCount: totalCells,
               itemBuilder: (context, index) {
-                // 現在のセルの行と列を計算
                 int row = index ~/ rows;
                 int column = index % rows;
 
