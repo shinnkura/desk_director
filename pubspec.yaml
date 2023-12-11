@@ -40,9 +40,11 @@ dependencies:
   shared_preferences: ^2.2.2
   auto_size_text: ^3.0.0
   url_launcher: ^6.2.1
-  firebase_core:
   flutter_staggered_grid_view:
   webview_flutter: ^4.4.2
+  cloud_firestore:
+  firebase_core: ^2.13.1
+  flutter_bloc: ^8.0.0
 
 dev_dependencies:
   flutter_test:
