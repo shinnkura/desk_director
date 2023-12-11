@@ -6,6 +6,7 @@ class SeatChartPage extends StatefulWidget {
   const SeatChartPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SeatChartPageState createState() => _SeatChartPageState();
 }
 
@@ -15,6 +16,8 @@ class _SeatChartPageState extends State<SeatChartPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isSmallScreen = MediaQuery.of(context).size.width < 600;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('座席表'),
@@ -39,6 +42,7 @@ class _SeatChartPageState extends State<SeatChartPage> {
               crossAxisCount: rows,
               crossAxisSpacing: 4,
               mainAxisSpacing: 4,
+              childAspectRatio: isSmallScreen ? 1 / 2 : 1, // スマホサイズでは縦長の比率にする
             ),
             itemCount: totalCells,
             itemBuilder: (context, index) {
@@ -159,6 +163,7 @@ class _SeatChartPageState extends State<SeatChartPage> {
     // 位置が選択された場合、名前を入力するダイアログを表示
     if (selectedRow != -1 && selectedColumn != -1) {
       String newName = '';
+      // ignore: use_build_context_synchronously
       await showDialog(
         context: context,
         builder: (context) {
@@ -200,6 +205,8 @@ class _SeatChartPageState extends State<SeatChartPage> {
 
   Widget _buildSeatItem(DocumentSnapshot seat) {
     bool hasText = seat['name'] != null && seat['name'].toString().isNotEmpty;
+    bool isSmallScreen = MediaQuery.of(context).size.width < 600;
+    String seatName = seat['name'].toString();
 
     return GestureDetector(
       onTap: () => _editSeatName(seat.id),
@@ -214,18 +221,23 @@ class _SeatChartPageState extends State<SeatChartPage> {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            if (!hasText) // テキストがない場合のみアイコンを表示
-              Icon(Icons.event_seat, color: Colors.orange[800]),
-            if (hasText) // テキストがある場合のみテキストを表示
-              Flexible(
-                child: Text(
-                  seat['name'],
+            if (!hasText) Icon(Icons.event_seat, color: Colors.orange[800]),
+            if (hasText && isSmallScreen)
+              for (var char in seatName.split(''))
+                Text(
+                  char,
                   style: TextStyle(
-                    color: Colors.orange[800],
-                    fontWeight: FontWeight.bold,
+                    fontSize:
+                        seatName.length > 2 ? 8 : 16, // 3文字を超える場合はサイズを小さくする
                   ),
-                  overflow: TextOverflow.ellipsis,
+                ),
+            if (hasText && !isSmallScreen)
+              Text(
+                seatName,
+                style: const TextStyle(
+                  fontSize: 16,
                 ),
               ),
           ],
