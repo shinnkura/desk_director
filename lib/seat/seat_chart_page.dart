@@ -23,41 +23,44 @@ class _SeatChartPageState extends State<SeatChartPage> {
         title: const Text('座席表'),
         backgroundColor: Colors.orange, // アプリのカラースキームに合わせる
       ),
-      body: StreamBuilder(
-        stream: firestore.collection('seats').snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            // エラーハンドリング
-          }
-          if (!snapshot.hasData) {
-            // データがない場合の処理
-          }
+      body: Padding(
+        padding: const EdgeInsets.only(top: 10.0), // ここで上部に余白を追加
+        child: StreamBuilder(
+          stream: firestore.collection('seats').snapshots(),
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              // エラーハンドリング
+            }
+            if (!snapshot.hasData) {
+              // データがない場合の処理
+            }
 
-          var seats = snapshot.data!.docs;
-          // グリッドの全セル数を設定
-          int totalCells = rows * rows;
+            var seats = snapshot.data!.docs;
+            // グリッドの全セル数を設定
+            int totalCells = rows * rows;
 
-          return GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: rows,
-              crossAxisSpacing: 4,
-              mainAxisSpacing: 4,
-              childAspectRatio: isSmallScreen ? 1 / 2 : 1, // スマホサイズでは縦長の比率にする
-            ),
-            itemCount: totalCells,
-            itemBuilder: (context, index) {
-              // 現在のセルの行と列を計算
-              int row = index ~/ rows;
-              int column = index % rows;
+            return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: rows,
+                crossAxisSpacing: isSmallScreen ? 0 : 4, // スマホでは隙間を0に
+                mainAxisSpacing: isSmallScreen ? 0 : 4, // スマホでは隙間を0に
+                childAspectRatio: isSmallScreen ? 1 / 2 : 1, // スマホでは縦長の比率に
+              ),
+              itemCount: totalCells,
+              itemBuilder: (context, index) {
+                // 現在のセルの行と列を計算
+                int row = index ~/ rows;
+                int column = index % rows;
 
-              var seat = seats.firstWhereOrNull(
-                (s) => s['row'] == row && s['column'] == column,
-              );
+                var seat = seats.firstWhereOrNull(
+                  (s) => s['row'] == row && s['column'] == column,
+                );
 
-              return seat != null ? _buildSeatItem(seat) : Container();
-            },
-          );
-        },
+                return seat != null ? _buildSeatItem(seat) : Container();
+              },
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addNewSeat,
@@ -224,7 +227,9 @@ class _SeatChartPageState extends State<SeatChartPage> {
       onTap: () => _editSeatName(seat.id),
       onLongPress: () => _showDeleteConfirmation(seat.id),
       child: Container(
-        margin: const EdgeInsets.all(4.0),
+        margin: isSmallScreen
+            ? EdgeInsets.zero
+            : const EdgeInsets.all(4.0), // スマホではマージンを0に
         padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Colors.orange[100],
@@ -235,14 +240,29 @@ class _SeatChartPageState extends State<SeatChartPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            if (!hasText) Icon(Icons.event_seat, color: Colors.orange[800]),
+            if (!hasText)
+              Container(
+                padding: const EdgeInsets.only(right: 3),
+                width: double.infinity, // コンテナの幅を最大に設定
+                height: 40, // コンテナの高さを設定
+                alignment: Alignment.center, // アイコンを中央に配置
+                // alignment: Alignment.centerLeft, // アイコンを左側に配置
+                child: Icon(
+                  Icons.event_seat,
+                  size: 24, // アイコンのサイズを適切に設定
+                  color: Colors.orange[800],
+                ),
+              ),
             if (hasText && isSmallScreen)
               for (var char in seatName.split(''))
-                Text(
-                  char,
-                  style: TextStyle(
-                    fontSize:
-                        seatName.length > 2 ? 10 : 16, // 3文字を超える場合はサイズを小さくする
+                Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    char,
+                    style: TextStyle(
+                      fontSize:
+                          seatName.length > 2 ? 10 : 16, // 3文字を超える場合はサイズを小さくする
+                    ),
                   ),
                 ),
             if (hasText && !isSmallScreen)
