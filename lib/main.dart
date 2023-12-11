@@ -8,6 +8,7 @@ import 'package:dashboard/dashboard.dart';
 
 import 'add_dialog.dart';
 import 'data_widget.dart';
+import 'seat/main.dart';
 import 'storage.dart';
 
 void main() async {
@@ -35,7 +36,8 @@ class _MyAppState extends State<MyApp> {
       initialRoute: "/",
       routes: {
         "/": (c) => const MainPage(),
-        "/dashboard": (c) => const DashboardWidget()
+        "/dashboard": (c) => const DashboardWidget(),
+        "/seat": (c) => const SeatChart()
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -72,7 +74,20 @@ class _MainPageState extends State<MainPage> {
                 child: Text("Try dashboard demo"),
               ),
             ),
-          )
+          ),
+          const SizedBox(height: 20),
+          Container(
+            alignment: Alignment.center,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, "/seat");
+              },
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 30),
+                child: Text("Try seat chart demo"),
+              ),
+            ),
+          ),
         ],
       ),
     );
