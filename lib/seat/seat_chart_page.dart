@@ -241,27 +241,17 @@ class _SeatChartPageState extends State<SeatChartPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             if (!hasText)
-              Container(
-                padding: const EdgeInsets.only(right: 3),
-                width: double.infinity, // コンテナの幅を最大に設定
-                height: 40, // コンテナの高さを設定
-                alignment: Alignment.center, // アイコンを中央に配置
-                child: Icon(
-                  Icons.event_seat,
-                  size: isSmallScreen ? 20 : 24,
-                  color: Colors.orange[800],
-                ),
+              Icon(
+                Icons.event_seat,
+                size: isSmallScreen ? 18 : 24,
+                color: Colors.orange[800],
               ),
             if (hasText && isSmallScreen)
               for (var char in seatName.split(''))
-                Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    char,
-                    style: TextStyle(
-                      fontSize:
-                          seatName.length > 2 ? 10 : 16, // 3文字を超える場合はサイズを小さくする
-                    ),
+                Text(
+                  char,
+                  style: TextStyle(
+                    fontSize: seatName.length > 2 ? 10 : 16,
                   ),
                 ),
             if (hasText && !isSmallScreen)
