@@ -102,23 +102,31 @@ class _SeatChartPageState extends State<SeatChartPage> {
     );
   }
 
-  Widget _buildGridSelector(Function(int, int) onSelect) {
+  Widget _buildGridSelector(
+      Function(int, int) onSelect, List<DocumentSnapshot> occupiedSeats) {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: rows,
         crossAxisSpacing: 4,
         mainAxisSpacing: 4,
       ),
-      itemCount: rows * rows, // 例えば、12行12列のグリッド
+      itemCount: rows * rows,
       itemBuilder: (context, index) {
         int row = index ~/ rows;
         int column = index % rows;
+
+        // 既に埋まっている座席をチェック
+        bool isOccupied = occupiedSeats
+            .any((seat) => seat['row'] == row && seat['column'] == column);
+
         return GestureDetector(
-          onTap: () => onSelect(row, column),
+          onTap: isOccupied ? null : () => onSelect(row, column),
           child: Container(
             margin: const EdgeInsets.all(4.0),
             decoration: BoxDecoration(
-              color: Colors.orange[100],
+              color: isOccupied
+                  ? Colors.grey
+                  : Colors.orange[100], // 埋まっている座席はグレー表示
               border: Border.all(color: Colors.orange),
               borderRadius: BorderRadius.circular(8.0),
             ),
@@ -132,21 +140,25 @@ class _SeatChartPageState extends State<SeatChartPage> {
     int selectedRow = -1;
     int selectedColumn = -1;
 
+    // Firestoreから座席データを取得
+    QuerySnapshot seatSnapshot = await firestore.collection('seats').get();
+    List<DocumentSnapshot> occupiedSeats = seatSnapshot.docs;
+
     // グリッド上の位置を選択するダイアログを表示
+    // ignore: use_build_context_synchronously
     await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('座席の位置を選択'),
           content: SizedBox(
-            // GridViewのサイズを設定
             width: double.maxFinite,
-            height: 300, // 適切な高さに設定
+            height: 300,
             child: _buildGridSelector((row, column) {
               selectedRow = row;
               selectedColumn = column;
               Navigator.of(context).pop();
-            }),
+            }, occupiedSeats),
           ),
           actions: <Widget>[
             TextButton(
@@ -230,7 +242,7 @@ class _SeatChartPageState extends State<SeatChartPage> {
                   char,
                   style: TextStyle(
                     fontSize:
-                        seatName.length > 2 ? 8 : 16, // 3文字を超える場合はサイズを小さくする
+                        seatName.length > 2 ? 10 : 16, // 3文字を超える場合はサイズを小さくする
                   ),
                 ),
             if (hasText && !isSmallScreen)
