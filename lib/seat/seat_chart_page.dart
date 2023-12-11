@@ -246,10 +246,9 @@ class _SeatChartPageState extends State<SeatChartPage> {
                 width: double.infinity, // コンテナの幅を最大に設定
                 height: 40, // コンテナの高さを設定
                 alignment: Alignment.center, // アイコンを中央に配置
-                // alignment: Alignment.centerLeft, // アイコンを左側に配置
                 child: Icon(
                   Icons.event_seat,
-                  size: 24, // アイコンのサイズを適切に設定
+                  size: isSmallScreen ? 20 : 24,
                   color: Colors.orange[800],
                 ),
               ),
