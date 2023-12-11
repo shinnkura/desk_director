@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -23,32 +24,33 @@ class _SeatChartPageState extends State<SeatChartPage> {
         stream: firestore.collection('seats').snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'データの読み込みに失敗しました。\n${snapshot.error}',
-                textAlign: TextAlign.center,
-              ),
-            );
+            // エラーハンドリング
           }
           if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: Colors.orange, // インジケータの色を変更
-              ),
-            );
+            // データがない場合の処理
           }
 
           var seats = snapshot.data!.docs;
+          // グリッドの全セル数を設定
+          int totalCells = rows * rows;
+
           return GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: rows,
               crossAxisSpacing: 4,
               mainAxisSpacing: 4,
             ),
-            itemCount: seats.length,
+            itemCount: totalCells,
             itemBuilder: (context, index) {
-              var seat = seats[index];
-              return _buildSeatItem(seat);
+              // 現在のセルの行と列を計算
+              int row = index ~/ rows;
+              int column = index % rows;
+
+              var seat = seats.firstWhereOrNull(
+                (s) => s['row'] == row && s['column'] == column,
+              );
+
+              return seat != null ? _buildSeatItem(seat) : Container();
             },
           );
         },
@@ -96,11 +98,99 @@ class _SeatChartPageState extends State<SeatChartPage> {
     );
   }
 
+  Widget _buildGridSelector(Function(int, int) onSelect) {
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: rows,
+        crossAxisSpacing: 4,
+        mainAxisSpacing: 4,
+      ),
+      itemCount: rows * rows, // 例えば、12行12列のグリッド
+      itemBuilder: (context, index) {
+        int row = index ~/ rows;
+        int column = index % rows;
+        return GestureDetector(
+          onTap: () => onSelect(row, column),
+          child: Container(
+            margin: const EdgeInsets.all(4.0),
+            decoration: BoxDecoration(
+              color: Colors.orange[100],
+              border: Border.all(color: Colors.orange),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _addNewSeat() async {
-    try {
-      await firestore.collection('seats').add({'name': ''});
-    } catch (e) {
-      print('エラーが発生しました: $e');
+    int selectedRow = -1;
+    int selectedColumn = -1;
+
+    // グリッド上の位置を選択するダイアログを表示
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('座席の位置を選択'),
+          content: SizedBox(
+            // GridViewのサイズを設定
+            width: double.maxFinite,
+            height: 300, // 適切な高さに設定
+            child: _buildGridSelector((row, column) {
+              selectedRow = row;
+              selectedColumn = column;
+              Navigator.of(context).pop();
+            }),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('キャンセル'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    // 位置が選択された場合、名前を入力するダイアログを表示
+    if (selectedRow != -1 && selectedColumn != -1) {
+      String newName = '';
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('座席名の入力'),
+            content: TextField(
+              onChanged: (value) {
+                newName = value;
+              },
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('キャンセル'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  firestore.collection('seats').add({
+                    'name': newName,
+                    'row': selectedRow,
+                    'column': selectedColumn,
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
